@@ -1,13 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+// Tenta pegar as chaves do ambiente
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-// Verificação de segurança: Só cria o cliente se as chaves existirem
-// Se não existirem (durante o build), cria um cliente 'falso' ou null para não travar
-export const supabase = (supabaseUrl && supabaseKey) 
-  ? createClient(supabaseUrl, supabaseKey)
-  : createClient('https://placeholder.supabase.co', 'placeholder-key'); 
+// VACINA: Se as chaves não existirem (durante o build), usa valores falsos para não travar.
+// Se existirem (no site real), usa as verdadeiras.
+const supabaseUrl = (url && url.startsWith('http')) ? url : 'https://placeholder.supabase.co';
+const supabaseKey = key || 'placeholder-key';
 
-// Nota: O 'placeholder' evita o erro "Invalid URL" durante o build, 
-// mas o site real precisa das variáveis corretas no Netlify para funcionar.
+export const supabase = createClient(supabaseUrl, supabaseKey);
